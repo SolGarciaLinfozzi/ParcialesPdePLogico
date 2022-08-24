@@ -68,103 +68,98 @@ concierto(mikuFest,argentina,100,conciertoPequenio(4)).
 
 % PUNTO 5
 
+puedeParticiparConcierto(hatsuneMiku,Concierto):-
+    concierto(Concierto,_,_,_).
+
 puedeParticiparConcierto(Vocaloid,Concierto):-
     cantante(Vocaloid),
     concierto(Concierto,_,_,TipoConcierto),
     cumpleRequisitosConcierto(Vocaloid,TipoConcierto).
 
-sabeMasDeNCanciones(Vocaloid,Cantidad) :-
-    findall(Cancion,sabeCantar(Vocaloid,Cancion), Canciones),
-    length(Canciones,CantidadDeCanciones),
-    CantidadDeCanciones > Cantidad.
-
 cumpleRequisitosConcierto(Vocaloid, conciertoGigante(CantidadCancionesMinimas,TiempoTotalMinimo)):-
-    sabeMasDeNCanciones(Vocaloid,CantidadCancionesMinimas),
+    sabeNCanciones(Vocaloid,CantidadCanciones),
+    CantidadCanciones>CantidadCancionesMinimas,
     tiempoTotalCanciones(Vocaloid,TiempoTotal),
-    TiempoTotal > TiempoTotalMinimo.
-
+    TiempoTotal>TiempoTotalMinimo.
 
 cumpleRequisitosConcierto(Vocaloid, conciertoMediano(TiempoTotalMaximo)):-
     tiempoTotalCanciones(Vocaloid,TiempoTotal),
-    TiempoTotal < TiempoTotalMaximo.
-
+    TiempoTotal<TiempoTotalMaximo.
 
 cumpleRequisitosConcierto(Vocaloid, conciertoPequenio(TiempoMinimoDeUnaCancion)):-
     sabeCantar(Vocaloid, cancion(_,Tiempo)),
     Tiempo>TiempoMinimoDeUnaCancion.
 
-
-%   sabeCantar(seeU,cancion(nightFever,5)).
-
-puedeParticiparConcierto(hatsuneMiku,Concierto):-
-    concierto(Concierto,_,_,_).
-
-% fama(mergurineLuka,0).
-% fama(hatsuneMiku,0).
-% fama(gumi,0).
-% fama(seeU,0).
-% fama(kaito,0).
-
-% famaTotal(Vocaloid,Fama) :-
-%     vocaloid(Vocaloid),
-%     fama(Vocaloid,0),
-%     puedeParticiparConcierto(Vocaloid,Concierto),
-%     concierto(Concierto,_,FamaConcierto,_),
-%     Fama is Fama + FamaConcierto.
+sabeNCanciones(Vocaloid,CantidadCanciones):-
+    cantante(Vocaloid),
+    findall(Cancion,sabeCantar(Vocaloid,cancion(Cancion,_)),Canciones),
+    length(Canciones,CantidadCanciones).
 
 
-famaTotal(Vocaloid,FamaTotal) :-
+% %   sabeCantar(seeU,cancion(nightFever,5)).
+
+
+% Conocer el vocaloid más famoso, es decir con mayor nivel de fama.
+
+% El nivel de fama de un vocaloid se calcula como la fama total que le dan los conciertos en los cuales puede participar 
+
+% multiplicado por la cantidad de canciones que sabe cantar.
+
+%concierto(mikuFest,argentina,100,conciertoPequenio(4)).
+
+fama(Vocaloid,FamaTotal):-
     vocaloid(Vocaloid),
-    findall(FamaConcierto,(puedeParticiparConcierto(Vocaloid,Concierto),concierto(Concierto,_,FamaConcierto,_)),FamaTotal),
-    sumlist(FamasConciertos,FamaTotal).
+    findall(Fama,(puedeParticiparConcierto(Vocaloid,Concierto),concierto(Concierto,_,Fama,_)),Famas),
+    sumlist(Famas,FamaTotal).
 
-% fama(Vocaloid,FamaTotal):-
+% masFamoso(Vocaloid):-
 %     vocaloid(Vocaloid),
-%     findall(Fama,(puedeParticiparConcierto(Vocaloid,Concierto),concierto(Concierto,_,Fama,_)),Famas),
-%     sumlist(Famas,FamaTotal).
+%     forall(fama(Vocaloid,FamaTotal),).
 
-vocaloidMasFamoso(Vocaloid) :-
-    vocaloid(Vocaloid),
-    famaTotal(Vocaloid,FamaTotal),
-    not((vocaloid(Vocaloid2),famaTotal(Vocaloid2,FamaTotal2),FamaTotal2>FamaTotal)).
-
+% No existe fama de un cantante tal que esa fama no sea la mayor
 
 masFamoso(VocaloidMasFamoso):-
-    famaTotal(VocaloidMasFamoso,FamaTotalFamoso),
-    forall( famaTotal(_,FamaTotal), FamaTotal =< FamaTotalFamoso).
+    fama(VocaloidMasFamoso,FamaTotalFamoso),
+    forall( fama(_,FamaTotal), FamaTotal =< FamaTotalFamoso).
 
-masFamoso2(VocaloidMasFamoso):-
-    famaTotal(VocaloidMasFamoso,FamaTotalFamoso),
-    not( (famaTotal(_,FamaTotal) , not(FamaTotal =< FamaTotalFamoso))).
 
-masFamoso3(VocaloidMasFamoso):-
-    famaTotal(VocaloidMasFamoso,FamaTotalFamoso),
-    not((famaTotal(_,FamaTotal),FamaTotal >= FamaTotalFamoso)).
+% masFamoso(VocaloidMasFamoso):-
+%     fama(VocaloidMasFamoso,FamaTotalFamoso),
+%     not( (fama(_,FamaTotal) , not(FamaTotal =< FamaTotalFamoso))).
 
-% encargadoDe(Encargado,Plato, Restaurante) :-
-%     plato(Plato,_),
-%     trabajaEn(Encargado,Restaurante),
-%     sabeCocinar(Encargado,Plato,ExperienciaEncargado),
-%     trabajaEn(Empleado,Restaurante),
-%     sabeCocinar(Empleado, Plato,Experiencia),
-%     not(Experiencia>ExperienciaEncargado).
+% masFamoso(VocaloidMasFamoso):-
+%     fama(VocaloidMasFamoso,FamaTotalFamoso),
+%     not((fama(_,FamaTotal),FamaTotal >= FamaTotalFamoso)).
 
-conoceA(megurineLuka, hatsuneMiku).
-conoceA(megurineLuka, gumi).
-conoceA(gumi, seeU).
-conoceA(seeU, kaito).
+% vocaloidMasFamoso(Vocaloid) :-
+%     vocaloid(Vocaloid),
+%     famaTotal(Vocaloid,FamaTotal),
+%     not((vocaloid(Vocaloid2),famaTotal(Vocaloid2,FamaTotal2),FamaTotal2>FamaTotal)).
 
-unicoParticipanteEntreConocidos(Cantante,Concierto):- 
-    puedeParticipar(Cantante, Concierto),
-	not((conocido(Cantante, OtroCantante), 
-    puedeParticipar(OtroCantante, Concierto))).
 
-%Conocido directo
-conocido(Cantante, OtroCantante) :- 
-conoce(Cantante, OtroCantante).
+%PUNTO 6
 
-%Conocido indirecto
-conocido(Cantante, OtroCantante) :- 
-conoce(Cantante, UnCantante), 
-conocido(UnCantante, OtroCantante).
+% queremos verificar si un vocaloid es el único que participa de un concierto, esto se cumple si 
+
+% ninguno de sus conocidos ya sea directo o indirectos (en cualquiera de los niveles) participa en el mismo concierto.
+
+conoce(megurineLuka,hatsuneMiku).
+conoce(megurineLuka,gumi).
+conoce(gumi,seeU).
+conoce(seeU,kaito).
+
+participaSoloEnConcierto(Vocaloid):-
+    puedeParticiparConcierto(Vocaloid,Concierto),
+    forall(conocido(Vocaloid,Vocaloid2),not(puedeParticiparConcierto(Vocaloid2,Concierto))).
+
+conocidoIndirecto(Vocaloid,Vocaloid3):-
+    conoce(Vocaloid,Vocaloid2),
+    conoce(Vocaloid2,Vocaloid3).
+
+
+conocido(Vocaloid,Vocaloid2):-
+    conocidoIndirecto(Vocaloid,Vocaloid2).
+
+ conocido(Vocaloid,Vocaloid2):-
+     conoce(Vocaloid,Vocaloid2).
 
