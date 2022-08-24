@@ -156,9 +156,6 @@ conocidoIndirecto(Vocaloid,Vocaloid3):-
     conoce(Vocaloid,Vocaloid2),
     conoce(Vocaloid2,Vocaloid3).
 
-% tieneConocidoIndirecto(Vocaloid,Vocaloid2):-
-%     conoce(Vocaloid,Vocaloid2),
-%     conoce(Vocaloid2,Vocaloid3).
 
 conocido(Vocaloid,Vocaloid2):-
     conocidoIndirecto(Vocaloid,Vocaloid2).
@@ -166,30 +163,3 @@ conocido(Vocaloid,Vocaloid2):-
  conocido(Vocaloid,Vocaloid2):-
      conoce(Vocaloid,Vocaloid2).
 
-
-% Vocaloid = hatsuneMiku,
-% Concierto = mikuExpo ;
-
-% Vocaloid = hatsuneMiku,
-% Concierto = magicalMirai ;
-
-% Vocaloid = hatsuneMiku,
-% Concierto = vocalektVisions ;
-
-% Vocaloid = hatsuneMiku,
-% Concierto = mikuFest ;
-
-% Vocaloid = megurineLuka,
-% Concierto = mikuFest ;
-
-% Vocaloid = gumi,
-% Concierto = mikuFest ;
-
-% Vocaloid = seeU,
-% Concierto = mikuFest ;
-
-
-% -----------
-% Vocaloid = hatsuneMiku ;
-
-% Vocaloid = seeU ;
